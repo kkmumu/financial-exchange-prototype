@@ -13,6 +13,9 @@
 ///      https://web.archive.org/web/20141222151051/https://dl.dropboxusercontent.com/u/3001534/engine.c
 ///
 ///      Nasdaq ITCH protocal http://www.nasdaqtrader.com/content/technicalsupport/specifications/dataproducts/NQTVITCHSpecification.pdf
+///
+///      JSON references https://github.com/nlohmann/json
+///
 /// efficiency:
 ///  cancel -> O(1)
 ///
@@ -27,30 +30,68 @@
 #include <vector>
 #include <string>
 #include <sstream>
+#include <chrono>
 
 #include "price4.h"
 #include "types.h"
 #include "ticks.h"
+
 #include "order.h"
+#include "order_entry.h"
+#include "order_base.h"
+#include "parser.h"
 #include "book.h"
+#include "order_generator.h"
+
 #include "engine.h"
-//#include "publisher.h"
+
+#include "message.h"
+#include "notifier.h"
 
 #include "nlohmann/json.hpp"
 
-typedef Order t_order;
-using json = nlohmann::json;
+using namespace lib;
+using namespace lob;
 
 int main()
 {
+    /*
+
+    /// Test TickSizeRule -> test passed!
+    nlohmann::json j_tick = {
+        {{"from_price", "0"}, {"to_price", "1"}, {"tick_size", 0.0001}},
+        {{"from_price", "1"}, {"tick_size", 0.01}},
+    };
+    lib::TickSizeRule tsr;
+    tsr.FromJson(j_tick);
+     
+     
+    /// Test OrderGenerator -> test passed!
+    lob::OrderGenerator myOrderGenerator("MSFT");
+    myOrderGenerator.run(tsr, 100);
+     
+     
+    /// Test OrderParser -> test passed!
+    std::vector<lob::Order> orders;
+    lob::OrderParser parser;
+    orders = parser.load("orders.jsonl", tsr, 100);
+        
     
-    MatchingEngine eng;
-    std::vector<Order> orders;
+    /// Test  LimitOrderBook -> test passed!
+    Order order0(1625787615, "AAPL", 1000134, 1, 1403000, 100, lib::OrderStatus::NEW);
+    Order order1(1625787616, "AAPL", 1000135, 0, 1402500, 200, lib::OrderStatus::NEW);
+    Order order2(1625787617, "AAPL", 1000135, 1, 0, 0, lib::OrderStatus::CANCEL);
+
+    OrderBook book0("AAPL");
+    book0.add(order0);
+    book0.add(order1);
+    book0.add(order2);
     
-    eng.config("config.json");
-    orders = eng.orderParser("orders.jsonl");
+     */
+
+    eng::MatchingEngine m_eng("config.json");
+    lib::TickSizeRule tsr(m_eng.tick_size_rule());
     
-    //TimeInForce obj = orders[7].time_in_force();
     
     return 0;
 }

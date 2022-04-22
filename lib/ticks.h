@@ -16,11 +16,13 @@
 //[
 //    {"lot_size": 100}
 //]
+namespace lib
+{
 
 struct Tick
 {
     Price4 from_price;
-    Price4 to_price;
+    Price4 to_price = Price4(std::numeric_limits<t_price>::max());
     t_tick tick_size = 0.0;
 };
 
@@ -31,7 +33,7 @@ private:
     std::vector<Tick> ticks;
     
 public:
-    TickSizeRule() {};
+    TickSizeRule() = default;
     ~TickSizeRule() = default;
     
     bool FromJson(const nlohmann::json &j);
@@ -41,3 +43,5 @@ public:
         return ticks;
     }
 };
+
+}

@@ -1,4 +1,10 @@
+// From xiaoxin
+
+#include <string>
+
 #include "ticks.h"
+
+using namespace lib;
 
 bool TickSizeRule::FromJson(const nlohmann::json &tick_json)
 {
@@ -19,7 +25,7 @@ bool TickSizeRule::FromJson(const nlohmann::json &tick_json)
             }
             if (item.key() == "tick_size")
             {
-                tick.tick_size = item.value().get<t_tick>();
+                tick.tick_size = item.value().get<double>();
             }
         }
         ticks.push_back(tick);
@@ -41,3 +47,4 @@ bool TickSizeRule::FromJson(const nlohmann::json &tick_json)
 
     return ticks.empty() ? false : true;
 }
+

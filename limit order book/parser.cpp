@@ -1,35 +1,24 @@
-#include <stdexcept>
+//
+//  parser.cpp
+//  financial_exchange_prototype
+//
+//  Created by Sun Shangwen on 4/8/22.
+//
 
-#include "engine.h"
+#include "parser.h"
 
-void MatchingEngine::config(const std::string &config_file)
-{
-    // config tick size rule
-    std::ifstream input_file(config_file, std::ifstream::in);
-    nlohmann::json json_tick;
+using namespace lob;
 
-    try
-    {
-        input_file >> json_tick;
-    }
-    catch(const std::exception& err)
-    {
-        std::cout << "FAILED TO OPEN " << config_file << ".\n";
-    }
-    tick_size_rule_.FromJson(json_tick);
-    
-    // config lot size
-    
-}
 
-std::vector<t_order> MatchingEngine::orderParser(const std::string &file_name)
+
+std::vector<lib::t_order> OrderParser::load(const lib::FILE& file_name, lib::TickSizeRule& tick_size_rule_, lib::t_lot lot_size_)
 {
     
     std::string line;
     nlohmann::json j;
     
     std::ifstream input_file(file_name, std::ifstream::in);
-    std::vector<t_order> orders;
+    std::vector<lib::t_order> orders;
     int cnt = 0; // count line numbers
     
     if (!input_file.is_open())
@@ -53,17 +42,16 @@ std::vector<t_order> MatchingEngine::orderParser(const std::string &file_name)
             std::cout << "LINE " << cnt << " : PARSING ERROR..." << err.what() << std::endl;
         }
         
-        t_order order;
         try
         {
-            order.init(j); // parse the order and checks if the input arguments are valid
+            lib::t_order order(j, tick_size_rule_, lot_size_); // parse the order and checks if the input arguments are valid
+            orders.emplace_back(order);
         }
         catch(const std::exception& err)
         {
             std::cout << "LINE " << cnt << " : INVALID ORDER INPUT..." << err.what() << std::endl;
         }
-        orders.emplace_back(order);
     }
-    
     return orders;
 }
+

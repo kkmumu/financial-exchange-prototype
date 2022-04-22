@@ -10,6 +10,9 @@
 
 #include "types.h"
 
+namespace lib
+{
+
 class Price4
 {
 private:
@@ -73,3 +76,4 @@ public:
     
 };
 
+}
