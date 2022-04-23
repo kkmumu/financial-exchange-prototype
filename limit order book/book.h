@@ -103,10 +103,6 @@ protected:
     /// @brief insert a new order into arenaorderbook at a specific price level
     bool insert_order(OrderBookEntry& inbound, lib::t_price orderPrice);
     
-
-private:
-    //bool submit_order(Entry & inbound);
-    //bool add_order(Entry& order_tracker, lib::t_price order_price);
  
 private:
     

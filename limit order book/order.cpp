@@ -21,7 +21,6 @@ void is_valid_price(lib::TickSizeRule& tsr, lib::Price4 price)
 }
 
 /// @brief a defualt constructor
-///
 Order::Order(lib::t_time timestamp,
           lib::t_symbol symbol,
           lib::t_orderid order_id,
@@ -55,8 +54,6 @@ Order::Order(nlohmann::json& json_order, lib::TickSizeRule& tsr, lib::t_lot lot)
     order_id_ = json_order.at("order_id");
     if(order_id_ <= 0)
         throw std::invalid_argument("Order has a bad ID information!");
-    
-    
     
     // parse order status
     std::string load = json_order.at("type").get<std::string>();
@@ -198,7 +195,7 @@ void Order::to_json(nlohmann::json& j)
                             {"order_id", order_id_},
                             {"symbol", symbol_},
                             {"side", lib::sideStr[is_buy_]},
-                            {"quantity", order_qty_},
+                            {"quantity", open_qty_},
                             {"limit_price", std::to_string(1.0 * price_/10000)}};
     }
     else

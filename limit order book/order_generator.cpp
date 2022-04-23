@@ -61,7 +61,7 @@ lib::t_orderid OrderGenerator::genCancelOrderId()
     return res;
 }
 
-void OrderGenerator::run(lib::TickSizeRule& tsr, lib::t_lot lot)
+void OrderGenerator::run(lib::TickSizeRule& tsr, lib::t_lot lot, std::size_t size)
 {
     std::fstream f(m_fileName, std::ios::out);
 

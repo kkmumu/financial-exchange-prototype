@@ -33,7 +33,7 @@ private:
     lib::TickSizeRule tick_size_rule_;
     lib::t_lot lot_size_;
     
-    lob::OrderParser parser;
+    lob::OrderParser parser; // parser tool to deal with json order files
     lob::OrderBook lob;
     
 public:
@@ -43,6 +43,9 @@ public:
     
     lib::t_lot lot_size();
     lib::TickSizeRule& tick_size_rule();
+    
+    /// @brief start the engine at the begining of a trading day
+    void start(const lib::FILE& state_file_last_day);
     
     /// @brief match orders from the request file
     void match_orders(const lib::FILE& order_request_file_name);

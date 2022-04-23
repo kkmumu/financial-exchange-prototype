@@ -6,9 +6,6 @@
 #include "order_generator.h"
 #include "engine.h"
 
-
-
- 
 using namespace eng;
  
 MatchingEngine::MatchingEngine(const lib::FILE& config_file_name) : lot_size_(100)
@@ -26,6 +23,16 @@ MatchingEngine::MatchingEngine(const lib::FILE& config_file_name) : lot_size_(10
     j_config = nlohmann::json::parse(config);
     tick_size_rule_.FromJson(j_config);
 }
+
+
+
+void MatchingEngine::start(const lib::FILE& state_file_last_day)
+{
+    std::vector<lob::Order> GTC_orders_last_day;
+
+    GTC_orders_last_day = parser.load(state_file_last_day, tick_size_rule_, lot_size_);
+}
+
 
 
 void MatchingEngine::match_orders(const lib::FILE& order_request_file_name)

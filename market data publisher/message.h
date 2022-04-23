@@ -2,47 +2,66 @@
 
 #include "nlohmann/json.hpp"
 
-#include "price4.h"
 #include "types.h"
+#include "book.h"
+#include "order_entry.h"
 
 namespace notify
 {
 
-struct mTrade
+class Callback
 {
-    lib::t_price price_;
-    lib::t_quantity quantity_;
-    std::string type_ = "TRADE";
+public:
+    Callback();
     
-    mTrade(lib::t_price price, lib::t_quantity quantity) : price_(price), quantity_(quantity) {};
     nlohmann::json to_json();
-};
-
-
-struct mUpdateDepth
-{
-    lib::t_price price_;
-    lib::t_quantity quantity_;
-    std::string action_; // {ADD, DELETE, MODIFY}
     
-    mUpdateDepth(lib::t_price price, lib::t_quantity quantity, std::string action) : price_(price), quantity_(quantity), action_(action) {};
-    nlohmann::json to_json();
+public:
+    std::string type_; // TRADE; DEPTH_UPDATE
+    std::string action_; // ADD; DELETE; MODIFY
+
+    lib::t_price price_;
+    lib::t_quantity qty_;
+    
+    std::vector<Callback> bids;
+    std::vector<Callback> asks;
 };
 
-inline nlohmann::json mTrade::to_json()
+
+inline Callback::Callback() : type_("UNKNOWN"), action_("UNKNOWN"), price_(0), qty_(0)
 {
-    return nlohmann::json{{"type", "TRADE"},
-        {"price", std::to_string(1.0 * price_/10000)},
-        {"quantity", quantity_}};
-};
+    bids.resize(0);
+    asks.resize(0);
+}
 
-inline nlohmann::json mUpdateDepth::to_json()
+inline nlohmann::json Callback::to_json()
 {
-    return nlohmann::json{{"type", action_},
-        {"price", std::to_string(1.0 * price_/10000)},
-        {"quantity", quantity_}};
+    nlohmann::json j;
+    j["price"] = std::to_string(1.0 * price_/10000);
+    j["quantity"] = qty_;
+    
+    if(type_ == "UNKNOWN")
+    {
+        j["action"] = action_;
+        return j;
+    }
+    
+    j["type"] = type_;
+    
+    if(type_ == "TRADE")
+        return j;
+    
+    j["bid"] = nlohmann::json::array();
+    j["ask"] = nlohmann::json::array();
+    
+    for(auto act : bids)
+        j["bid"].emplace_back(act.to_json());
+    
+    for(auto act : asks)
+        j["ask"].emplace_back(act.to_json());
+    
+    return j;
 };
-
 
 } // namespace notify
 

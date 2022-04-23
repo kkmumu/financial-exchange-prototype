@@ -67,8 +67,8 @@ int main()
      
      
     /// Test OrderGenerator -> test passed!
-    lob::OrderGenerator myOrderGenerator("MSFT");
-    myOrderGenerator.run(tsr, 100);
+     lob::OrderGenerator myOrderGenerator("MSFT");
+     myOrderGenerator.run(tsr, 100, 100);
      
      
     /// Test OrderParser -> test passed!
@@ -86,12 +86,20 @@ int main()
     book0.add(order0);
     book0.add(order1);
     book0.add(order2);
+     
+     
+    /// Test MatchingEngine -> test passed!
+    eng::MatchingEngine m_eng("config.json");
+    lib::TickSizeRule tsr(m_eng.tick_size_rule());
+
+    m_eng.match_orders("orders_AAPL.json");
+     
+    /// Test Notifier -> test passed!
+    notify::Notifier notifier;
+    std::cout << notifier.notify_trade(1314000, 100).dump();
     
      */
 
-    eng::MatchingEngine m_eng("config.json");
-    lib::TickSizeRule tsr(m_eng.tick_size_rule());
-    
     
     return 0;
 }

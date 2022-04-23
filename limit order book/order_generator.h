@@ -49,7 +49,7 @@ private:
 public:
     OrderGenerator() = default;
     OrderGenerator(lib::t_symbol symbol);
-    void run(lib::TickSizeRule& tsr, lib::t_lot lot);
+    void run(lib::TickSizeRule& tsr, lib::t_lot lot, std::size_t size);
 };
 
 inline lib::OrderStatus OrderGenerator::genOrderStatus()
